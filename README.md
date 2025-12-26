@@ -4,8 +4,9 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-green)
-![MongoDB](https://img.shields.io/badge/MongoDB-Latest-brightgreen)
+![MongoDB](https://img.shields.io/badge/MongoDB-7-brightgreen)
 ![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-blue)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 
 ## 📋 Table of Contents
 
@@ -16,6 +17,7 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 - [Installation](#-installation)
 - [Configuration](#-configuration)
 - [Running the Application](#-running-the-application)
+- [Deployment](#-deployment)
 - [API Endpoints](#-api-endpoints)
 - [WebSocket Endpoints](#-websocket-endpoints)
 - [Project Structure](#-project-structure)
@@ -231,7 +233,7 @@ ChatNexus/
 The `docker-compose.yml` includes:
 
 - **MongoDB**: Database server on port 27017
-- **Mongo Express**: Web-based MongoDB admin interface on port 8081
+- **Backend**: Spring Boot application on port 8080
 
 ```bash
 # Start services
@@ -243,6 +245,82 @@ docker-compose down
 # View logs
 docker-compose logs -f
 ```
+
+## 🚀 Deployment
+
+### Docker Deployment (Recommended)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/ChatNexus.git
+   cd ChatNexus
+   ```
+
+2. **Create environment file**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your production values
+   ```
+
+3. **Build and start containers**
+   ```bash
+   # Development
+   docker-compose up -d --build
+
+   # Production
+   docker-compose -f docker-compose.prod.yml up -d --build
+   ```
+
+4. **Verify deployment**
+   ```bash
+   # Check container status
+   docker-compose ps
+
+   # View logs
+   docker-compose logs -f backend
+   ```
+
+5. **Access the application**
+   - Application: `http://localhost:8080`
+
+### Manual Docker Build
+
+```bash
+# Build the image
+docker build -t chatnexus:latest .
+
+# Run with external MongoDB
+docker run -d \
+  --name chatnexus \
+  -p 8080:8080 \
+  -e MONGODB_URI=mongodb://user:pass@mongodb-host:27017/chat_nexus?authSource=admin \
+  chatnexus:latest
+```
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MONGODB_URI` | MongoDB connection string | `mongodb://krushna:krushna@localhost:27017/chat_nexus?authSource=admin` |
+| `PORT` | Application port | `8080` |
+| `MONGO_USERNAME` | MongoDB root username | `krushna` |
+| `MONGO_PASSWORD` | MongoDB root password | `krushna` |
+| `JAVA_OPTS` | JVM options | `-Xmx256m -Xms128m` |
+
+### Production Considerations
+
+1. **Security**
+   - Change default MongoDB credentials
+   - Use environment variables for sensitive data
+   - Consider adding HTTPS with a reverse proxy (nginx/traefik)
+
+2. **Scaling**
+   - MongoDB can be replaced with a managed service (MongoDB Atlas)
+   - Application can be scaled horizontally behind a load balancer
+
+3. **Monitoring**
+   - Add health check endpoint monitoring
+   - Consider adding logging aggregation (ELK stack)
 
 ## 🤝 How It Works
 
@@ -259,4 +337,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Made with ❤️ using Spring Boot and WebSocket
-

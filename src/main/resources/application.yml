@@ -1,12 +1,7 @@
 spring:
   data:
     mongodb:
-      username: krushna
-      password: krushna
-      host: localhost
-      port: 27017
-      database: ChatNexus
-      authentication-database: admin
+      uri: ${MONGODB_URI:mongodb://krushna:krushna@localhost:27017/chat_nexus?authSource=admin}
 
 server:
-  port: 8080
+  port: ${PORT:8080}

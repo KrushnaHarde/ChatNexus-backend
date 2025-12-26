@@ -1,4 +1,4 @@
-# ChatNexus 💬
+# ChatNexus v2.0 💬
 
 A real-time 1-to-1 chat application built with Spring Boot and WebSocket technology.
 
@@ -7,6 +7,7 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 ![MongoDB](https://img.shields.io/badge/MongoDB-7-brightgreen)
 ![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-blue)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![Version](https://img.shields.io/badge/Version-2.0-purple)
 
 ## 📋 Table of Contents
 
@@ -32,6 +33,30 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 - **User Status Management**: Automatic online/offline status updates
 - **Responsive UI**: Clean and modern user interface
 - **Chat Room Management**: Automatic chat room creation for user pairs
+- **Read Receipts** *(v2.0)*: Real-time read status with double blue ticks when messages are read
+- **Message Timestamps** *(v2.0)*: Hover over messages to see sent and read timestamps
+- **JWT Authentication**: Secure user authentication with JSON Web Tokens
+
+## 🆕 What's New in v2.0
+
+### Read Receipts
+- Single tick (✓) - Message sent
+- Double tick (✓✓) - Message delivered
+- Blue double tick (✓✓) - Message read
+- **Real-time updates**: See read status instantly without refreshing
+
+### Message Timestamps
+- Hover over any message to see detailed timestamps
+- Shows "Sent: [time]" for all messages
+- Shows "Read: [time]" for read messages
+- Smart date formatting (time only for today, date + time for older messages)
+
+### JWT Authentication & Security
+- Secure user registration and login
+- Token-based authentication for all API requests
+- Password encryption using BCrypt
+- Protected WebSocket connections
+- Automatic session management with localStorage
 
 ## 🛠 Tech Stack
 
@@ -42,6 +67,7 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 - **Spring Data MongoDB** - Database operations
 - **Lombok** - Reducing boilerplate code
 - **STOMP** - Simple Text Oriented Messaging Protocol
+- **JWT** - JSON Web Tokens for authentication
 
 ### Frontend
 - **HTML5/CSS3** - Structure and styling

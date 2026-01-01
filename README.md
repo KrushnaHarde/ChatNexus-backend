@@ -1,4 +1,4 @@
-# ChatNexus v2.0 💬
+# ChatNexus v2.1 💬
 
 A real-time 1-to-1 chat application built with Spring Boot and WebSocket technology.
 
@@ -7,7 +7,7 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 ![MongoDB](https://img.shields.io/badge/MongoDB-7-brightgreen)
 ![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-blue)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
-![Version](https://img.shields.io/badge/Version-2.0-purple)
+![Version](https://img.shields.io/badge/Version-2.1-purple)
 
 ## 📋 Table of Contents
 
@@ -27,17 +27,37 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 ## ✨ Features
 
 - **Real-time Messaging**: Instant message delivery using WebSocket and STOMP protocol
-- **User Presence**: See who's online in real-time
+- **User Search**: Find any user by username and start chatting instantly
+- **Chat Contacts**: WhatsApp-like contact list showing previous conversations sorted by time
 - **1-to-1 Private Chat**: Secure private conversations between users
 - **Message Persistence**: All messages are stored in MongoDB
 - **User Status Management**: Automatic online/offline status updates
 - **Responsive UI**: Clean and modern user interface
 - **Chat Room Management**: Automatic chat room creation for user pairs
-- **Read Receipts** *(v2.0)*: Real-time read status with double blue ticks when messages are read
-- **Message Timestamps** *(v2.0)*: Hover over messages to see sent and read timestamps
+- **Read Receipts**: Real-time read status with double blue ticks when messages are read
+- **Message Timestamps**: Hover over messages to see sent and read timestamps
 - **JWT Authentication**: Secure user authentication with JSON Web Tokens
+- **Offline Messaging**: Send messages to offline users - they'll receive them when they come online
 
-## 🆕 What's New in v2.0
+## 🆕 What's New in v2.1
+
+### User Search
+- **Search by Username**: Find any registered user by their unique username
+- **Real-time Search**: Search results appear as you type with debouncing
+- **Start New Conversations**: Chat with any user even if you haven't chatted before
+- **User Status Display**: See if searched users are online/offline
+
+### Chat Contacts (WhatsApp-style)
+- **Previous Conversations**: See all your chat history on the left sidebar
+- **Sorted by Time**: Most recent conversations appear at the top
+- **Last Message Preview**: See the last message in each conversation
+- **Unread Count**: Badge showing number of unread messages
+- **Online Status Indicator**: Green dot for online contacts
+
+### MVC Architecture Refactoring
+- Clean separation of concerns with proper MVC pattern
+- Organized package structure for maintainability
+- DTOs for request/response handling
 
 ### Read Receipts
 - Single tick (✓) - Message sent
@@ -186,12 +206,31 @@ You can override the default configuration using environment variables:
 
 ## 📡 API Endpoints
 
-### REST Endpoints
+### Authentication Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Login and get JWT token |
+
+### User Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/users` | Get all connected (online) users |
+| `GET` | `/users/all` | Get all registered users |
+| `GET` | `/users/search?query={query}` | Search users by username |
+| `GET` | `/users/{username}` | Get user by username |
+| `GET` | `/users/{username}/online` | Check if user is online |
+
+### Message Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | `GET` | `/messages/{senderId}/{recipientId}` | Get chat history between two users |
+| `GET` | `/messages/undelivered/{userId}` | Get undelivered messages for a user |
+| `POST` | `/messages/read/{senderId}/{recipientId}` | Mark messages as read |
+| `GET` | `/contacts/{userId}` | Get chat contacts sorted by last message |
 
 ## 🔌 WebSocket Endpoints
 
@@ -205,6 +244,7 @@ You can override the default configuration using environment variables:
 | `/app/user.addUser` | Register a new user and broadcast to all |
 | `/app/user.disconnectUser` | Disconnect user and broadcast to all |
 | `/app/chat` | Send a private message |
+| `/app/chat.read` | Mark messages as read |
 
 ### Subscriptions
 
@@ -212,45 +252,73 @@ You can override the default configuration using environment variables:
 |-------------|-------------|
 | `/topic/public` | Receive user connect/disconnect notifications |
 | `/user/{username}/queue/messages` | Receive private messages |
+| `/user/{username}/queue/status` | Receive message status updates (delivered/read) |
 
-## 📁 Project Structure
+## 📁 Project Structure (MVC Pattern)
 
 ```
 ChatNexus/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/project/ChatNexus/
-│   │   │   ├── ChatNexusApplication.java    # Main application class
-│   │   │   ├── chat/
-│   │   │   │   ├── ChatController.java      # Chat message controller
-│   │   │   │   ├── ChatMessage.java         # Chat message entity
-│   │   │   │   ├── ChatMessageRepository.java
-│   │   │   │   ├── ChatMessageService.java
-│   │   │   │   └── ChatNotification.java    # Notification DTO
-│   │   │   ├── chatroom/
-│   │   │   │   ├── ChatRoom.java            # Chat room entity
-│   │   │   │   ├── ChatRoomRepository.java
-│   │   │   │   └── ChatRoomService.java
-│   │   │   ├── config/
-│   │   │   │   └── WebSocketConfig.java     # WebSocket configuration
-│   │   │   └── user/
-│   │   │       ├── Status.java              # User status enum
-│   │   │       ├── User.java                # User entity
-│   │   │       ├── UserController.java      # User controller
-│   │   │       ├── UserRepository.java
-│   │   │       └── UserService.java
+│   │   │   ├── ChatNexusApplication.java       # Main application class
+│   │   │   │
+│   │   │   ├── controller/                     # Controllers (HTTP/WebSocket handlers)
+│   │   │   │   ├── AuthController.java         # Authentication endpoints
+│   │   │   │   ├── ChatController.java         # Chat message endpoints
+│   │   │   │   └── UserController.java         # User management endpoints
+│   │   │   │
+│   │   │   ├── service/                        # Business logic layer
+│   │   │   │   ├── AuthService.java            # Authentication logic
+│   │   │   │   ├── ChatMessageService.java     # Chat message operations
+│   │   │   │   ├── ChatRoomService.java        # Chat room management
+│   │   │   │   └── UserService.java            # User operations
+│   │   │   │
+│   │   │   ├── repository/                     # Data access layer
+│   │   │   │   ├── ChatMessageRepository.java  # Chat message queries
+│   │   │   │   ├── ChatRoomRepository.java     # Chat room queries
+│   │   │   │   └── UserRepository.java         # User queries
+│   │   │   │
+│   │   │   ├── model/                          # Entity/Document classes
+│   │   │   │   ├── ChatMessage.java            # Chat message entity
+│   │   │   │   ├── ChatRoom.java               # Chat room entity
+│   │   │   │   ├── MessageStatus.java          # Message status enum
+│   │   │   │   ├── Status.java                 # User status enum
+│   │   │   │   └── User.java                   # User entity
+│   │   │   │
+│   │   │   ├── dto/                            # Data Transfer Objects
+│   │   │   │   ├── request/
+│   │   │   │   │   ├── LoginRequest.java       # Login request DTO
+│   │   │   │   │   └── RegisterRequest.java    # Registration request DTO
+│   │   │   │   └── response/
+│   │   │   │       ├── AuthResponse.java       # Auth response DTO
+│   │   │   │       ├── ChatContactResponse.java # Chat contact DTO
+│   │   │   │       ├── ChatNotification.java   # Notification DTO
+│   │   │   │       └── UserResponse.java       # User response DTO
+│   │   │   │
+│   │   │   ├── config/                         # Configuration classes
+│   │   │   │   └── WebSocketConfig.java        # WebSocket configuration
+│   │   │   │
+│   │   │   └── security/                       # Security configuration
+│   │   │       ├── ApplicationConfig.java      # App security beans
+│   │   │       ├── JwtAuthenticationFilter.java # JWT filter
+│   │   │       ├── JwtService.java             # JWT token operations
+│   │   │       └── SecurityConfig.java         # Security settings
+│   │   │
 │   │   └── resources/
-│   │       ├── application.yml              # Application configuration
+│   │       ├── application.yml                 # Application configuration
 │   │       ├── static/
-│   │       │   ├── index.html               # Main HTML page
-│   │       │   ├── css/main.css             # Styles
-│   │       │   └── js/main.js               # Client-side JavaScript
+│   │       │   ├── index.html                  # Main HTML page
+│   │       │   ├── css/main.css                # Styles
+│   │       │   └── js/main.js                  # Client-side JavaScript
 │   │       └── templates/
+│   │
 │   └── test/
 │       └── java/com/project/ChatNexus/
 │           └── ChatNexusApplicationTests.java
-├── docker-compose.yml                        # Docker services configuration
-├── pom.xml                                   # Maven dependencies
+│
+├── docker-compose.yml                          # Docker services configuration
+├── pom.xml                                     # Maven dependencies
 └── README.md
 ```
 
@@ -350,11 +418,14 @@ docker run -d \
 
 ## 🤝 How It Works
 
-1. **User Connection**: When a user enters their nickname and connects, they are registered in MongoDB with an ONLINE status
-2. **User Discovery**: The client fetches all online users via REST API and subscribes to `/topic/public` for real-time updates
-3. **Sending Messages**: Messages are sent via WebSocket to `/app/chat`, stored in MongoDB, and delivered to the recipient's private queue
-4. **Receiving Messages**: Users receive messages on their personal subscription `/user/{nickname}/queue/messages`
-5. **Disconnection**: When a user disconnects, their status is updated to OFFLINE and all clients are notified
+1. **User Registration/Login**: Users register with username, full name, and password. JWT tokens are issued for authentication.
+2. **User Search**: Find any user by their username using the search bar and start a conversation.
+3. **Chat Contacts**: Your previous conversations appear in the sidebar, sorted by most recent message (WhatsApp-style).
+4. **User Discovery**: The client fetches chat contacts via REST API and subscribes to `/topic/public` for real-time status updates.
+5. **Sending Messages**: Messages are sent via WebSocket to `/app/chat`, stored in MongoDB, and delivered to the recipient's private queue.
+6. **Offline Messages**: If recipient is offline, messages are stored and delivered when they come online.
+7. **Read Receipts**: When you open a chat, read notifications are sent to the sender in real-time.
+8. **Disconnection**: When a user disconnects, their status is updated to OFFLINE and all clients are notified.
 
 ## 📄 License
 

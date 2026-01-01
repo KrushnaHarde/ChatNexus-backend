@@ -1,7 +1,10 @@
-package com.project.ChatNexus.chat;
+package com.project.ChatNexus.service;
 
-import com.project.ChatNexus.chatroom.ChatRoomService;
-import com.project.ChatNexus.user.UserService;
+import com.project.ChatNexus.dto.response.ChatContactResponse;
+import com.project.ChatNexus.model.ChatMessage;
+import com.project.ChatNexus.model.MessageStatus;
+import com.project.ChatNexus.model.User;
+import com.project.ChatNexus.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +30,6 @@ public class ChatMessageService {
         chatMessage.setChatId(chatId);
         chatMessage.setTimeStamp(new Date());
 
-        // Set initial status based on recipient's online status
         if (userService.isUserOnline(chatMessage.getRecipientId())) {
             chatMessage.setStatus(MessageStatus.DELIVERED);
         } else {
@@ -96,5 +98,45 @@ public class ChatMessageService {
         });
 
         return readMessages;
+    }
+
+    public List<ChatContactResponse> getChatContacts(String userId) {
+        List<String> chatPartners = chatRoomService.getChatPartners(userId);
+        List<ChatContactResponse> contacts = new ArrayList<>();
+
+        for (String partnerId : chatPartners) {
+            User partner = userService.findByUsername(partnerId).orElse(null);
+            if (partner == null) continue;
+
+            var chatId = chatRoomService.getChatRoomId(userId, partnerId, false);
+
+            if (chatId.isPresent()) {
+                var lastMessage = chatMessageRepository.findTopByChatIdOrderByTimeStampDesc(chatId.get());
+
+                long unreadCount = chatMessageRepository.countByRecipientIdAndSenderIdAndStatusNot(
+                        userId, partnerId, MessageStatus.READ);
+
+                ChatContactResponse contact = ChatContactResponse.builder()
+                        .username(partner.getUsername())
+                        .fullName(partner.getFullName())
+                        .status(partner.getStatus())
+                        .lastMessage(lastMessage.map(ChatMessage::getContent).orElse(null))
+                        .lastMessageTime(lastMessage.map(ChatMessage::getTimeStamp).orElse(null))
+                        .lastMessageSenderId(lastMessage.map(ChatMessage::getSenderId).orElse(null))
+                        .unreadCount(unreadCount)
+                        .build();
+
+                contacts.add(contact);
+            }
+        }
+
+        contacts.sort((c1, c2) -> {
+            if (c1.getLastMessageTime() == null && c2.getLastMessageTime() == null) return 0;
+            if (c1.getLastMessageTime() == null) return 1;
+            if (c2.getLastMessageTime() == null) return -1;
+            return c2.getLastMessageTime().compareTo(c1.getLastMessageTime());
+        });
+
+        return contacts;
     }
 }

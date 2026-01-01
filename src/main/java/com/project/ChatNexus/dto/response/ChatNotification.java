@@ -1,5 +1,6 @@
-package com.project.ChatNexus.chat;
+package com.project.ChatNexus.dto.response;
 
+import com.project.ChatNexus.model.MessageStatus;
 import lombok.*;
 
 import java.util.Date;
@@ -18,3 +19,4 @@ public class ChatNotification {
     private Date timestamp;
     private Date readTimestamp;
 }
+

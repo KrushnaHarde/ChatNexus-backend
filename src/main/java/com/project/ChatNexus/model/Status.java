@@ -1,6 +1,7 @@
-package com.project.ChatNexus.user;
+package com.project.ChatNexus.model;
 
 public enum Status {
     ONLINE,
     OFFLINE
 }
+

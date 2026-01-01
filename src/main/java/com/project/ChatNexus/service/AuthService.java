@@ -1,9 +1,11 @@
-package com.project.ChatNexus.auth;
+package com.project.ChatNexus.service;
 
+import com.project.ChatNexus.dto.request.LoginRequest;
+import com.project.ChatNexus.dto.request.RegisterRequest;
+import com.project.ChatNexus.dto.response.AuthResponse;
+import com.project.ChatNexus.model.Status;
+import com.project.ChatNexus.model.User;
 import com.project.ChatNexus.security.JwtService;
-import com.project.ChatNexus.user.Status;
-import com.project.ChatNexus.user.User;
-import com.project.ChatNexus.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,13 +19,13 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userService.existsByUsername(request.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
 
@@ -35,7 +37,7 @@ public class AuthService {
                 .lastSeen(LocalDateTime.now())
                 .build();
 
-        userRepository.save(user);
+        userService.save(user);
 
         String token = jwtService.generateToken(user);
 
@@ -59,7 +61,7 @@ public class AuthService {
             throw new RuntimeException("Invalid username or password");
         }
 
-        User user = userRepository.findByUsername(request.getUsername())
+        User user = userService.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         String token = jwtService.generateToken(user);

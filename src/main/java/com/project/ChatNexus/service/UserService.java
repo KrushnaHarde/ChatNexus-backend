@@ -1,5 +1,8 @@
-package com.project.ChatNexus.user;
+package com.project.ChatNexus.service;
 
+import com.project.ChatNexus.model.Status;
+import com.project.ChatNexus.model.User;
+import com.project.ChatNexus.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +13,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
 
     public void saveUser(User user) {
@@ -34,7 +38,7 @@ public class UserService {
         }
     }
 
-    public List<User> findConnectedUser() {
+    public List<User> findConnectedUsers() {
         return userRepository.findAllByStatus(Status.ONLINE);
     }
 
@@ -54,5 +58,13 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .map(user -> user.getStatus() == Status.ONLINE)
                 .orElse(false);
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
     }
 }

@@ -1,4 +1,4 @@
-package com.project.ChatNexus.chatroom;
+package com.project.ChatNexus.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document
+@Document(collection = "chat_rooms")
 public class ChatRoom {
     @Id
     private String id;

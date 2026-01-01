@@ -1,5 +1,9 @@
-package com.project.ChatNexus.auth;
+package com.project.ChatNexus.controller;
 
+import com.project.ChatNexus.dto.request.LoginRequest;
+import com.project.ChatNexus.dto.request.RegisterRequest;
+import com.project.ChatNexus.dto.response.AuthResponse;
+import com.project.ChatNexus.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,4 +41,3 @@ public class AuthController {
         }
     }
 }
-

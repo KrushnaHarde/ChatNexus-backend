@@ -1,4 +1,4 @@
-package com.project.ChatNexus.chat;
+package com.project.ChatNexus.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document
+@Document(collection = "chat_messages")
 public class ChatMessage {
     @Id
     private String id;
@@ -24,3 +24,4 @@ public class ChatMessage {
     @Builder.Default
     private MessageStatus status = MessageStatus.SENT;
 }
+

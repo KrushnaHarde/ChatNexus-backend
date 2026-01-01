@@ -1,6 +1,11 @@
-package com.project.ChatNexus.chat;
+package com.project.ChatNexus.controller;
 
-import com.project.ChatNexus.user.UserService;
+import com.project.ChatNexus.dto.response.ChatContactResponse;
+import com.project.ChatNexus.dto.response.ChatNotification;
+import com.project.ChatNexus.model.ChatMessage;
+import com.project.ChatNexus.model.MessageStatus;
+import com.project.ChatNexus.service.ChatMessageService;
+import com.project.ChatNexus.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,6 +22,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
+
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate messagingTemplate;
     private final UserService userService;
@@ -54,16 +60,13 @@ public class ChatController {
                             .build()
             );
         }
-        // If offline, message is saved with SENT status
     }
 
-    // WebSocket endpoint for marking messages as read
     @MessageMapping("/chat.read")
     public void markAsRead(@Payload Map<String, String> payload) {
         String senderId = payload.get("senderId");
         String recipientId = payload.get("recipientId");
 
-        // Mark messages as read in database
         List<ChatMessage> readMessages = chatMessageService.markMessagesAsReadAndReturn(senderId, recipientId);
 
         // Send read confirmation to the original sender if online
@@ -113,7 +116,6 @@ public class ChatController {
             }
         });
 
-        // Mark them as delivered
         chatMessageService.markMessagesAsDelivered(undeliveredMessages);
         return ResponseEntity.ok(undeliveredMessages);
     }
@@ -126,4 +128,10 @@ public class ChatController {
         chatMessageService.markMessagesAsRead(senderId, recipientId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/contacts/{userId}")
+    public ResponseEntity<List<ChatContactResponse>> getChatContacts(@PathVariable String userId) {
+        return ResponseEntity.ok(chatMessageService.getChatContacts(userId));
+    }
 }
+

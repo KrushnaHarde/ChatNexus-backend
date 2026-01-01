@@ -1,4 +1,4 @@
-package com.project.ChatNexus.user;
+package com.project.ChatNexus.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,3 +59,4 @@ public class User implements UserDetails {
         return true;
     }
 }
+

@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const authTitle = document.querySelector('#auth-title');
     const authSubtitle = document.querySelector('#auth-subtitle');
     const toggleText = document.querySelector('#toggle-text');
+    const userSearchInput = document.querySelector('#userSearch');
+    const searchResultsDiv = document.querySelector('#searchResults');
 
     let stompClient = null;
     let username = null;
@@ -21,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let token = null;
     let selectedUserId = null;
     let isLoginMode = true;
+    let searchTimeout = null;
 
     // Store message elements by ID for status updates
     let messageElements = {};
@@ -173,6 +176,135 @@ document.addEventListener('DOMContentLoaded', function() {
         stompClient.debug = null; // Disable debug logs
 
         stompClient.connect({}, onConnected, onError);
+
+        // Setup search functionality
+        setupSearch();
+    }
+
+    function setupSearch() {
+        if (userSearchInput) {
+            userSearchInput.addEventListener('input', function(e) {
+                const query = e.target.value.trim();
+
+                // Clear previous timeout
+                if (searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+
+                if (query.length === 0) {
+                    searchResultsDiv.classList.add('hidden');
+                    return;
+                }
+
+                // Debounce search
+                searchTimeout = setTimeout(() => {
+                    searchUsers(query);
+                }, 300);
+            });
+
+            // Hide search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!userSearchInput.contains(e.target) && !searchResultsDiv.contains(e.target)) {
+                    searchResultsDiv.classList.add('hidden');
+                }
+            });
+
+            // Show search results when focusing on input
+            userSearchInput.addEventListener('focus', function() {
+                if (userSearchInput.value.trim().length > 0) {
+                    searchResultsDiv.classList.remove('hidden');
+                }
+            });
+        }
+    }
+
+    async function searchUsers(query) {
+        try {
+            const response = await fetch(`/users/search?query=${encodeURIComponent(query)}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const users = await response.json();
+                // Filter out current user
+                const filteredUsers = users.filter(user => user.username !== username);
+                displaySearchResults(filteredUsers);
+            }
+        } catch (error) {
+            console.error('Error searching users:', error);
+        }
+    }
+
+    function displaySearchResults(users) {
+        searchResultsDiv.innerHTML = '';
+
+        if (users.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.classList.add('no-results');
+            noResults.textContent = 'No users found';
+            searchResultsDiv.appendChild(noResults);
+        } else {
+            users.forEach(user => {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('search-result-item');
+                resultItem.dataset.username = user.username;
+                resultItem.dataset.fullname = user.fullName;
+
+                resultItem.innerHTML = `
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=667eea&color=fff&size=36" alt="${user.fullName}">
+                    <div class="user-info">
+                        <div class="fullname">${user.fullName}</div>
+                        <div class="username">@${user.username}</div>
+                    </div>
+                    <span class="status-indicator ${user.status === 'ONLINE' ? 'online' : 'offline'}"></span>
+                `;
+
+                resultItem.addEventListener('click', () => selectSearchResult(user));
+                searchResultsDiv.appendChild(resultItem);
+            });
+        }
+
+        searchResultsDiv.classList.remove('hidden');
+    }
+
+    function selectSearchResult(user) {
+        selectedUserId = user.username;
+
+        // Update chat header
+        if (chatHeader) {
+            chatHeader.innerHTML = `<i class="fas fa-comment-dots"></i> Chat with ${user.fullName}`;
+        }
+
+        // Show message form
+        if (messageForm) {
+            messageForm.classList.remove('hidden');
+        }
+
+        // Clear search
+        userSearchInput.value = '';
+        searchResultsDiv.classList.add('hidden');
+
+        // Remove active state from all users in list
+        document.querySelectorAll('.user-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Check if user already exists in contacts list
+        const existingUser = document.querySelector(`#user-${CSS.escape(user.username)}`);
+        if (existingUser) {
+            existingUser.classList.add('active');
+            // Clear notification badge
+            const nbrMsg = existingUser.querySelector('.nbr-msg');
+            if (nbrMsg) {
+                nbrMsg.classList.add('hidden');
+                nbrMsg.textContent = '0';
+            }
+        }
+
+        // Fetch and display chat
+        fetchAndDisplayUserChat();
     }
 
     function onConnected() {
@@ -376,28 +508,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function findAndDisplayConnectedUsers() {
         try {
-            const connectedUsersResponse = await fetch('/users', {
+            // Fetch chat contacts (previous conversations) instead of online users
+            const contactsResponse = await fetch(`/contacts/${username}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            let connectedUsers = await connectedUsersResponse.json();
-            connectedUsers = connectedUsers.filter(user => user.username !== username);
+            let contacts = await contactsResponse.json();
             const connectedUsersList = document.getElementById('connectedUsers');
             connectedUsersList.innerHTML = '';
 
-            if (connectedUsers.length === 0) {
+            if (contacts.length === 0) {
                 const emptyMsg = document.createElement('li');
                 emptyMsg.classList.add('no-users');
-                emptyMsg.textContent = 'No users online';
+                emptyMsg.innerHTML = '<i class="fas fa-search"></i> Search for users to start chatting';
                 emptyMsg.style.color = '#8892b0';
                 emptyMsg.style.textAlign = 'center';
                 emptyMsg.style.padding = '20px';
                 connectedUsersList.appendChild(emptyMsg);
             } else {
-                connectedUsers.forEach((user, index) => {
-                    appendUserElement(user, connectedUsersList);
-                    if (index < connectedUsers.length - 1) {
+                contacts.forEach((contact, index) => {
+                    appendContactElement(contact, connectedUsersList);
+                    if (index < contacts.length - 1) {
                         const separator = document.createElement('li');
                         separator.classList.add('separator');
                         connectedUsersList.appendChild(separator);
@@ -405,39 +537,103 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         } catch (error) {
-            console.error('Error fetching connected users:', error);
+            console.error('Error fetching contacts:', error);
         }
     }
 
-    function appendUserElement(user, connectedUsersList) {
+    function appendContactElement(contact, connectedUsersList) {
         const listItem = document.createElement('li');
         listItem.classList.add('user-item');
-        listItem.id = `user-${user.username}`;
-        listItem.dataset.username = user.username;
+        listItem.id = `user-${contact.username}`;
+        listItem.dataset.username = contact.username;
+        listItem.dataset.fullname = contact.fullName;
 
         const userImage = document.createElement('img');
-        userImage.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=667eea&color=fff&size=42`;
-        userImage.alt = user.fullName;
+        userImage.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(contact.fullName)}&background=667eea&color=fff&size=42`;
+        userImage.alt = contact.fullName;
+
+        // Contact info container
+        const contactInfo = document.createElement('div');
+        contactInfo.classList.add('contact-info');
+
+        // Name row with status indicator
+        const nameRow = document.createElement('div');
+        nameRow.classList.add('contact-name');
 
         const usernameSpan = document.createElement('span');
-        usernameSpan.textContent = user.fullName;
+        usernameSpan.textContent = contact.fullName;
+        nameRow.appendChild(usernameSpan);
 
         // Online status indicator
         const statusIndicator = document.createElement('span');
-        statusIndicator.classList.add('status-indicator', 'online');
+        statusIndicator.classList.add('status-indicator');
+        statusIndicator.classList.add(contact.status === 'ONLINE' ? 'online' : 'offline');
+        nameRow.appendChild(statusIndicator);
 
+        contactInfo.appendChild(nameRow);
+
+        // Last message preview
+        if (contact.lastMessage) {
+            const lastMessageSpan = document.createElement('div');
+            lastMessageSpan.classList.add('last-message');
+            const prefix = contact.lastMessageSenderId === username ? 'You: ' : '';
+            lastMessageSpan.textContent = prefix + contact.lastMessage;
+            if (contact.unreadCount > 0) {
+                lastMessageSpan.classList.add('unread');
+            }
+            contactInfo.appendChild(lastMessageSpan);
+        }
+
+        // Meta info (time + unread badge)
+        const metaDiv = document.createElement('div');
+        metaDiv.classList.add('contact-meta');
+
+        // Last message time
+        if (contact.lastMessageTime) {
+            const timeSpan = document.createElement('span');
+            timeSpan.classList.add('last-time');
+            timeSpan.textContent = formatContactTime(contact.lastMessageTime);
+            if (contact.unreadCount > 0) {
+                timeSpan.classList.add('unread');
+            }
+            metaDiv.appendChild(timeSpan);
+        }
+
+        // Unread badge
         const receivedMsgs = document.createElement('span');
-        receivedMsgs.textContent = '0';
-        receivedMsgs.classList.add('nbr-msg', 'hidden');
+        receivedMsgs.textContent = contact.unreadCount || '0';
+        receivedMsgs.classList.add('nbr-msg');
+        if (!contact.unreadCount || contact.unreadCount === 0) {
+            receivedMsgs.classList.add('hidden');
+        }
+        metaDiv.appendChild(receivedMsgs);
 
         listItem.appendChild(userImage);
-        listItem.appendChild(usernameSpan);
-        listItem.appendChild(statusIndicator);
-        listItem.appendChild(receivedMsgs);
+        listItem.appendChild(contactInfo);
+        listItem.appendChild(metaDiv);
 
         listItem.addEventListener('click', userItemClick);
 
         connectedUsersList.appendChild(listItem);
+    }
+
+    function formatContactTime(dateStr) {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        const now = new Date();
+        const isToday = date.toDateString() === now.toDateString();
+
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const isYesterday = date.toDateString() === yesterday.toDateString();
+
+        if (isToday) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } else if (isYesterday) {
+            return 'Yesterday';
+        } else {
+            return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        }
     }
 
     function userItemClick(event) {
@@ -453,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         selectedUserId = clickedUser.dataset.username;
 
-        const selectedUserName = clickedUser.querySelector('span').textContent;
+        const selectedUserName = clickedUser.dataset.fullname || clickedUser.querySelector('.contact-name span')?.textContent || clickedUser.querySelector('span')?.textContent;
         if (chatHeader) {
             chatHeader.innerHTML = `<i class="fas fa-comment-dots"></i> Chat with ${selectedUserName}`;
         }
@@ -465,6 +661,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (nbrMsg) {
             nbrMsg.classList.add('hidden');
             nbrMsg.textContent = '0';
+        }
+
+        // Clear search
+        if (userSearchInput) {
+            userSearchInput.value = '';
+        }
+        if (searchResultsDiv) {
+            searchResultsDiv.classList.add('hidden');
         }
     }
 
@@ -591,6 +795,19 @@ document.addEventListener('DOMContentLoaded', function() {
             stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
             messageInput.value = '';
             chatArea.scrollTop = chatArea.scrollHeight;
+
+            // Refresh contacts list to update last message
+            setTimeout(() => {
+                findAndDisplayConnectedUsers().then(() => {
+                    // Re-apply active state
+                    if (selectedUserId) {
+                        const selectedUser = document.querySelector(`#user-${CSS.escape(selectedUserId)}`);
+                        if (selectedUser) {
+                            selectedUser.classList.add('active');
+                        }
+                    }
+                });
+            }, 500);
         }
     }
 
@@ -598,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Public message received:', payload.body);
         const message = JSON.parse(payload.body);
 
-        // Refresh user list when someone connects or disconnects
+        // Refresh contacts list when someone connects or disconnects
         findAndDisplayConnectedUsers().then(() => {
             // Re-apply active state if a user was selected
             if (selectedUserId) {
@@ -607,9 +824,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     selectedUser.classList.add('active');
                 }
             }
-
-            // Re-fetch undelivered messages to update badges
-            fetchUndeliveredMessages();
         });
 
         // Show notification for user status change
@@ -630,10 +844,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Send read notification immediately since the chat is open
             sendReadNotification(message.senderId);
-        } else {
-            // Show notification badge for the sender
-            updateNotificationBadge(message.senderId, 1);
         }
+
+        // Refresh contacts list to update last message and order
+        findAndDisplayConnectedUsers().then(() => {
+            // Re-apply active state if a user was selected
+            if (selectedUserId) {
+                const selectedUser = document.querySelector(`#user-${CSS.escape(selectedUserId)}`);
+                if (selectedUser) {
+                    selectedUser.classList.add('active');
+                    // Clear badge if it's the selected user
+                    if (selectedUserId === message.senderId) {
+                        const nbrMsg = selectedUser.querySelector('.nbr-msg');
+                        if (nbrMsg) {
+                            nbrMsg.classList.add('hidden');
+                            nbrMsg.textContent = '0';
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // Logout functionality

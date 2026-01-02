@@ -1,13 +1,14 @@
-# ChatNexus v2.1 💬
+# ChatNexus v3.0 💬
 
-A real-time 1-to-1 chat application built with Spring Boot and WebSocket technology.
+A real-time 1-to-1 chat application built with Spring Boot and WebSocket technology, featuring **media sharing** with Cloudinary integration.
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-green)
 ![MongoDB](https://img.shields.io/badge/MongoDB-7-brightgreen)
 ![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-blue)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-Media%20Storage-3448C5)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
-![Version](https://img.shields.io/badge/Version-2.1-purple)
+![Version](https://img.shields.io/badge/Version-3.0-purple)
 
 ## 📋 Table of Contents
 
@@ -27,6 +28,7 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 ## ✨ Features
 
 - **Real-time Messaging**: Instant message delivery using WebSocket and STOMP protocol
+- **Media Sharing**: Share images, videos, and audio files in chat (powered by Cloudinary)
 - **User Search**: Find any user by username and start chatting instantly
 - **Chat Contacts**: WhatsApp-like contact list showing previous conversations sorted by time
 - **1-to-1 Private Chat**: Secure private conversations between users
@@ -38,6 +40,26 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 - **Message Timestamps**: Hover over messages to see sent and read timestamps
 - **JWT Authentication**: Secure user authentication with JSON Web Tokens
 - **Offline Messaging**: Send messages to offline users - they'll receive them when they come online
+
+## 🆕 What's New in v3.0
+
+### 📸 Media Sharing (Cloudinary Integration)
+- **Image Sharing**: Share images (JPG, PNG, GIF, WebP, BMP) up to 50MB
+- **Video Sharing**: Share videos (MP4, MOV, AVI, MKV, WebM) up to 50MB
+- **Audio Sharing**: Share audio files (MP3, WAV, OGG, M4A, AAC) up to 50MB
+- **Cloud Storage**: Files are uploaded to Cloudinary - no server storage needed
+- **Real-time Delivery**: Media messages delivered instantly via WebSocket
+- **Image Lightbox**: Click on images to view them in full size
+- **Upload Progress**: Visual progress bar while uploading files
+- **File Preview**: Preview selected file before sending
+
+### How Media Sharing Works
+1. Click the 📎 attachment button
+2. Select an image, video, or audio file
+3. Optionally add a caption/message
+4. File uploads to Cloudinary via backend
+5. Only the Cloudinary URL is stored in MongoDB
+6. Recipient receives the media in real-time
 
 ## 🆕 What's New in v2.1
 
@@ -85,6 +107,7 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 - **Spring Boot 4.0.1** - Application framework
 - **Spring WebSocket** - Real-time bidirectional communication
 - **Spring Data MongoDB** - Database operations
+- **Cloudinary** - Cloud-based media storage and delivery
 - **Lombok** - Reducing boilerplate code
 - **STOMP** - Simple Text Oriented Messaging Protocol
 - **JWT** - JSON Web Tokens for authentication
@@ -95,8 +118,9 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 - **SockJS** - WebSocket fallback
 - **STOMP.js** - STOMP client library
 
-### Database
+### Database & Storage
 - **MongoDB** - NoSQL database for storing messages and user data
+- **Cloudinary** - Cloud storage for media files (images, videos, audio)
 
 ### DevOps
 - **Docker** - Containerization
@@ -112,13 +136,15 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 │                 │◄──────────────────────► │                 │
 └─────────────────┘                         └────────┬────────┘
                                                      │
-                                                     │ Spring Data
-                                                     │
-                                            ┌────────▼────────┐
-                                            │                 │
-                                            │    MongoDB      │
-                                            │                 │
-                                            └─────────────────┘
+                                    ┌────────────────┼────────────────┐
+                                    │                │                │
+                                    │ Spring Data    │  Cloudinary    │
+                                    │                │   API          │
+                            ┌───────▼───────┐ ┌──────▼──────┐
+                            │               │ │             │
+                            │   MongoDB     │ │ Cloudinary  │
+                            │               │ │   (Media)   │
+                            └───────────────┘ └─────────────┘
 ```
 
 ## 📦 Prerequisites
@@ -183,6 +209,9 @@ You can override the default configuration using environment variables:
 | `MONGODB_USERNAME` | MongoDB username | krushna |
 | `MONGODB_PASSWORD` | MongoDB password | krushna |
 | `SERVER_PORT` | Application port | 8080 |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name | your_cloud_name |
+| `CLOUDINARY_API_KEY` | Cloudinary API key | your_api_key |
+| `CLOUDINARY_API_SECRET` | Cloudinary API secret | your_api_secret |
 
 ## 🏃 Running the Application
 
@@ -232,6 +261,13 @@ You can override the default configuration using environment variables:
 | `POST` | `/messages/read/{senderId}/{recipientId}` | Mark messages as read |
 | `GET` | `/contacts/{userId}` | Get chat contacts sorted by last message |
 
+### Media Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/media/upload` | Upload media file to Cloudinary |
+| `GET` | `/api/media/allowed-extensions` | Get list of allowed file extensions |
+
 ## 🔌 WebSocket Endpoints
 
 ### Connection
@@ -266,12 +302,14 @@ ChatNexus/
 │   │   │   ├── controller/                     # Controllers (HTTP/WebSocket handlers)
 │   │   │   │   ├── AuthController.java         # Authentication endpoints
 │   │   │   │   ├── ChatController.java         # Chat message endpoints
+│   │   │   │   ├── MediaController.java        # Media upload endpoints
 │   │   │   │   └── UserController.java         # User management endpoints
 │   │   │   │
 │   │   │   ├── service/                        # Business logic layer
 │   │   │   │   ├── AuthService.java            # Authentication logic
 │   │   │   │   ├── ChatMessageService.java     # Chat message operations
 │   │   │   │   ├── ChatRoomService.java        # Chat room management
+│   │   │   │   ├── CloudinaryService.java      # Cloudinary media operations
 │   │   │   │   └── UserService.java            # User operations
 │   │   │   │
 │   │   │   ├── repository/                     # Data access layer
@@ -283,6 +321,7 @@ ChatNexus/
 │   │   │   │   ├── ChatMessage.java            # Chat message entity
 │   │   │   │   ├── ChatRoom.java               # Chat room entity
 │   │   │   │   ├── MessageStatus.java          # Message status enum
+│   │   │   │   ├── MessageType.java            # Message type enum (TEXT, IMAGE, VIDEO, AUDIO)
 │   │   │   │   ├── Status.java                 # User status enum
 │   │   │   │   └── User.java                   # User entity
 │   │   │   │
@@ -294,9 +333,11 @@ ChatNexus/
 │   │   │   │       ├── AuthResponse.java       # Auth response DTO
 │   │   │   │       ├── ChatContactResponse.java # Chat contact DTO
 │   │   │   │       ├── ChatNotification.java   # Notification DTO
+│   │   │   │       ├── MediaUploadResponse.java # Media upload response DTO
 │   │   │   │       └── UserResponse.java       # User response DTO
 │   │   │   │
 │   │   │   ├── config/                         # Configuration classes
+│   │   │   │   ├── CloudinaryConfig.java       # Cloudinary configuration
 │   │   │   │   └── WebSocketConfig.java        # WebSocket configuration
 │   │   │   │
 │   │   │   └── security/                       # Security configuration
@@ -423,9 +464,23 @@ docker run -d \
 3. **Chat Contacts**: Your previous conversations appear in the sidebar, sorted by most recent message (WhatsApp-style).
 4. **User Discovery**: The client fetches chat contacts via REST API and subscribes to `/topic/public` for real-time status updates.
 5. **Sending Messages**: Messages are sent via WebSocket to `/app/chat`, stored in MongoDB, and delivered to the recipient's private queue.
-6. **Offline Messages**: If recipient is offline, messages are stored and delivered when they come online.
-7. **Read Receipts**: When you open a chat, read notifications are sent to the sender in real-time.
-8. **Disconnection**: When a user disconnects, their status is updated to OFFLINE and all clients are notified.
+6. **Media Sharing**: 
+   - User selects a file (image/video/audio) via the attachment button
+   - File is uploaded to Cloudinary via `/api/media/upload` endpoint
+   - Backend stores only the Cloudinary URL in MongoDB (no file storage on server)
+   - Message with media URL is sent via WebSocket to recipient
+   - Recipient displays the media using the Cloudinary CDN URL
+7. **Offline Messages**: If recipient is offline, messages are stored and delivered when they come online.
+8. **Read Receipts**: When you open a chat, read notifications are sent to the sender in real-time.
+9. **Disconnection**: When a user disconnects, their status is updated to OFFLINE and all clients are notified.
+
+### Supported Media Formats
+
+| Type | Formats | Max Size |
+|------|---------|----------|
+| Images | JPG, JPEG, PNG, GIF, WebP, BMP | 50MB |
+| Videos | MP4, MOV, AVI, MKV, WebM | 50MB |
+| Audio | MP3, WAV, OGG, M4A, AAC | 50MB |
 
 ## 📄 License
 
@@ -433,4 +488,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Made with ❤️ using Spring Boot and WebSocket
+Made with ❤️ using Spring Boot, WebSocket & Cloudinary

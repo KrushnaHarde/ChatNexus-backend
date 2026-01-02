@@ -7,6 +7,7 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 ![MongoDB](https://img.shields.io/badge/MongoDB-7-brightgreen)
 ![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-blue)
 ![Cloudinary](https://img.shields.io/badge/Cloudinary-Media%20Storage-3448C5)
+![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203.0-85EA2D)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![Version](https://img.shields.io/badge/Version-3.0-purple)
 
@@ -61,6 +62,18 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 5. Only the Cloudinary URL is stored in MongoDB
 6. Recipient receives the media in real-time
 
+### 📚 API Documentation (Swagger/OpenAPI)
+- **Interactive API Docs**: Full Swagger UI available at `/swagger-ui.html`
+- **OpenAPI 3.0 Spec**: Machine-readable spec at `/v3/api-docs`
+- **JWT Authentication**: Test endpoints directly with Bearer token
+- **Request/Response Examples**: See example payloads for all endpoints
+
+### 📊 Production-Ready Features
+- **SLF4J Logging**: Comprehensive logging throughout the application
+- **Spring Actuator**: Health checks and metrics at `/actuator/health`
+- **Global Exception Handling**: Consistent error responses with timestamps
+- **Input Validation**: Request validation with meaningful error messages
+
 ## 🆕 What's New in v2.1
 
 ### User Search
@@ -107,7 +120,10 @@ A real-time 1-to-1 chat application built with Spring Boot and WebSocket technol
 - **Spring Boot 4.0.1** - Application framework
 - **Spring WebSocket** - Real-time bidirectional communication
 - **Spring Data MongoDB** - Database operations
+- **Spring Actuator** - Production monitoring and health checks
 - **Cloudinary** - Cloud-based media storage and delivery
+- **SpringDoc OpenAPI** - API documentation (Swagger UI)
+- **SLF4J + Logback** - Logging framework
 - **Lombok** - Reducing boilerplate code
 - **STOMP** - Simple Text Oriented Messaging Protocol
 - **JWT** - JSON Web Tokens for authentication
@@ -268,6 +284,22 @@ You can override the default configuration using environment variables:
 | `POST` | `/api/media/upload` | Upload media file to Cloudinary |
 | `GET` | `/api/media/allowed-extensions` | Get list of allowed file extensions |
 
+### Actuator Endpoints (Monitoring)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/actuator/health` | Application health status |
+| `GET` | `/actuator/info` | Application information |
+| `GET` | `/actuator/metrics` | Application metrics |
+
+### API Documentation
+
+| Endpoint | Description |
+|----------|-------------|
+| `/swagger-ui.html` | Interactive Swagger UI |
+| `/v3/api-docs` | OpenAPI 3.0 JSON specification |
+| `/v3/api-docs.yaml` | OpenAPI 3.0 YAML specification |
+
 ## 🔌 WebSocket Endpoints
 
 ### Connection
@@ -338,7 +370,11 @@ ChatNexus/
 │   │   │   │
 │   │   │   ├── config/                         # Configuration classes
 │   │   │   │   ├── CloudinaryConfig.java       # Cloudinary configuration
+│   │   │   │   ├── OpenApiConfig.java          # Swagger/OpenAPI configuration
 │   │   │   │   └── WebSocketConfig.java        # WebSocket configuration
+│   │   │   │
+│   │   │   ├── exception/                      # Exception handling
+│   │   │   │   └── GlobalExceptionHandler.java # Global exception handler
 │   │   │   │
 │   │   │   └── security/                       # Security configuration
 │   │   │       ├── ApplicationConfig.java      # App security beans
@@ -347,7 +383,8 @@ ChatNexus/
 │   │   │       └── SecurityConfig.java         # Security settings
 │   │   │
 │   │   └── resources/
-│   │       ├── application.yml                 # Application configuration
+│   │       ├── application.properties          # Application configuration
+│   │       ├── application.yml                 # YAML configuration
 │   │       ├── static/
 │   │       │   ├── index.html                  # Main HTML page
 │   │       │   ├── css/main.css                # Styles

@@ -1,0 +1,68 @@
+version: '3.9'
+
+services:
+  # ChatNexus Application
+  chatnexus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chatnexus-app
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring Profile
+      - SPRING_PROFILES_ACTIVE=prod
+
+      # MongoDB Configuration
+      - SPRING_DATA_MONGODB_URI=${PROD_MONGO_URI}
+      - SPRING_DATA_MONGODB_DATABASE=${PROD_MONGO_DATABASE}
+
+      # JWT Configuration
+      - JWT_SECRET=${PROD_JWT_SECRET}
+      - JWT_EXPIRATION=${PROD_JWT_EXPIRATION}
+
+      # Cloudinary Configuration
+      - CLOUDINARY_CLOUD_NAME=${PROD_CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${PROD_CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${PROD_CLOUDINARY_API_SECRET}
+
+      # Server Configuration
+      - SERVER_PORT=8080
+
+    depends_on:
+      - mongodb
+    networks:
+      - chatnexus-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Local MongoDB (optional - for testing)
+  mongodb:
+    image: mongo:7.0-alpine
+    container_name: chatnexus-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: chat_nexus
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - chatnexus-network
+    restart: unless-stopped
+
+networks:
+  chatnexus-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  mongodb_config:
+

@@ -156,3 +156,50 @@
 2026-01-06T22:39:09.325+05:30  INFO 10624 --- [ChatNexus] [clientInboundChannel-17] c.p.ChatNexus.controller.UserController  : User disconnecting: prod1
 2026-01-06T22:39:09.328+05:30  INFO 10624 --- [ChatNexus] [clientInboundChannel-34] c.project.ChatNexus.service.UserService  : User prod1 is now OFFLINE
 2026-01-06T22:39:09.328+05:30  INFO 10624 --- [ChatNexus] [clientInboundChannel-17] c.project.ChatNexus.service.UserService  : User prod1 is now OFFLINE
+2026-01-06T22:45:26.150+05:30  INFO 27548 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : Starting ChatNexusApplication using Java 21.0.9 with PID 27548 (D:\spring\ChatNexus\target\classes started by Admin in D:\spring\ChatNexus)
+2026-01-06T22:45:26.155+05:30  INFO 27548 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : The following 1 profile is active: "prod"
+2026-01-06T22:45:29.047+05:30  WARN 27548 --- [ChatNexus] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-01-06T22:45:30.313+05:30  INFO 27548 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : Started ChatNexusApplication in 4.709 seconds (process running for 5.28)
+2026-01-06T22:45:49.574+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-1] c.p.ChatNexus.controller.AuthController  : Login attempt for username: prod
+2026-01-06T22:45:49.574+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-1] c.project.ChatNexus.service.AuthService  : Processing login for username: prod
+2026-01-06T22:45:49.884+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-1] c.project.ChatNexus.service.AuthService  : Login successful for user: prod
+2026-01-06T22:45:49.885+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-1] c.p.ChatNexus.controller.AuthController  : User logged in successfully: prod
+2026-01-06T22:45:50.030+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-13] c.p.ChatNexus.controller.UserController  : User connecting: prod (prod)
+2026-01-06T22:45:50.055+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-13] c.project.ChatNexus.service.UserService  : User prod is now ONLINE
+2026-01-06T22:45:50.074+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-9] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod
+2026-01-06T22:45:50.074+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.ChatController  : Fetching undelivered messages for user: prod
+2026-01-06T22:45:50.078+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-7] c.p.C.service.ChatMessageService         : Marked 0 messages as DELIVERED
+2026-01-06T22:45:50.118+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-10] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod
+2026-01-06T22:45:53.787+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-1] c.p.ChatNexus.controller.ChatController  : Fetching chat messages between prod and prod1
+2026-01-06T22:45:54.313+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-3] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod
+2026-01-06T22:46:00.302+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-16] c.p.ChatNexus.controller.ChatController  : Processing message from prod to prod1
+2026-01-06T22:46:00.320+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-16] c.p.C.service.ChatMessageService         : Message saved with ID: 695d4350ec09596d97886d96
+2026-01-06T22:46:00.322+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-16] c.p.ChatNexus.controller.ChatController  : Recipient prod1 is offline, message 695d4350ec09596d97886d96 stored for later delivery
+2026-01-06T22:46:00.812+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-6] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod
+2026-01-06T22:46:11.999+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.AuthController  : Login attempt for username: prod1
+2026-01-06T22:46:11.999+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-7] c.project.ChatNexus.service.AuthService  : Processing login for username: prod1
+2026-01-06T22:46:12.072+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-7] c.project.ChatNexus.service.AuthService  : Login successful for user: prod1
+2026-01-06T22:46:12.072+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.AuthController  : User logged in successfully: prod1
+2026-01-06T22:46:12.106+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-31] c.p.ChatNexus.controller.UserController  : User connecting: prod1 (prod1)
+2026-01-06T22:46:12.112+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-31] c.project.ChatNexus.service.UserService  : User prod1 is now ONLINE
+2026-01-06T22:46:12.115+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-6] c.p.ChatNexus.controller.ChatController  : Fetching undelivered messages for user: prod1
+2026-01-06T22:46:12.118+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-5] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod1
+2026-01-06T22:46:12.128+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-6] c.p.C.service.ChatMessageService         : Marked 1 messages as DELIVERED
+2026-01-06T22:46:12.128+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod
+2026-01-06T22:46:12.143+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-9] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod1
+2026-01-06T22:46:15.010+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-2] c.p.ChatNexus.controller.ChatController  : Fetching chat messages between prod1 and prod
+2026-01-06T22:46:15.023+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-3] c.p.ChatNexus.controller.ChatController  : Marking messages as read - sender: prod, recipient: prod1
+2026-01-06T22:46:15.032+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-3] c.p.C.service.ChatMessageService         : Marked 1 messages as READ
+2026-01-06T22:46:15.528+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-3] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod1
+2026-01-06T22:46:21.562+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-8] c.p.ChatNexus.controller.ChatController  : Fetching chat messages between prod and prod1
+2026-01-06T22:46:22.080+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-5] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod
+2026-01-06T22:46:38.086+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-9] c.p.C.controller.MediaController         : Media upload request received - filename: IMG-20240721-WA0041.jpg, size: 323450 bytes
+2026-01-06T22:46:41.592+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-9] c.p.ChatNexus.service.CloudinaryService  : File uploaded successfully: https://res.cloudinary.com/dompvechk/image/upload/v1767719800/chat_nexus/image/hvkvzhb8bfqeanz87ajv.jpg
+2026-01-06T22:46:41.593+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-9] c.p.C.controller.MediaController         : File uploaded successfully - url: https://res.cloudinary.com/dompvechk/image/upload/v1767719800/chat_nexus/image/hvkvzhb8bfqeanz87ajv.jpg, type: IMAGE
+2026-01-06T22:46:41.602+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-7] c.p.ChatNexus.controller.ChatController  : Processing message from prod to prod1
+2026-01-06T22:46:41.614+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-7] c.p.C.service.ChatMessageService         : Message saved with ID: 695d4379ec09596d97886d97
+2026-01-06T22:46:41.616+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-7] c.p.ChatNexus.controller.ChatController  : Message 695d4379ec09596d97886d97 delivered successfully
+2026-01-06T22:46:41.619+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-10] c.p.ChatNexus.controller.ChatController  : Marking messages as read - sender: prod, recipient: prod1
+2026-01-06T22:46:41.626+05:30  INFO 27548 --- [ChatNexus] [clientInboundChannel-10] c.p.C.service.ChatMessageService         : Marked 1 messages as READ
+2026-01-06T22:46:41.628+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-3] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod1
+2026-01-06T22:46:42.511+05:30  INFO 27548 --- [ChatNexus] [http-nio-8080-exec-8] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: prod

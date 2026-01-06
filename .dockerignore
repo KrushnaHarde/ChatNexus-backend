@@ -1,40 +1,74 @@
-# Git
+# ================================
+# Docker Build Ignore File
+# ================================
+
+# Version control
 .git
 .gitignore
 
-# IDE
-.idea/
+# IDE & Development
+.idea
+.vscode
+.classpath
+.project
+.settings
 *.iml
-.vscode/
+*.iws
+*.ipr
 *.swp
 *.swo
+*~
 
-# Build outputs
+# Build artifacts
 target/
-!target/*.jar
+build/
+.gradle/
+*.class
+
+# Maven
+.m2/
+
+# Dependencies
+node_modules/
+
+# Environment files (don't copy .env to Docker)
+.env
+.env.*
+.env.local
 
 # Logs
-*.log
 logs/
+*.log
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Documentation
+# Documentation (optional, reduce image size)
+README.md
 *.md
-!README.md
-
-# Docker
-Dockerfile
-docker-compose*.yml
-.dockerignore
-
-# Maven wrapper (we use Maven in Docker image)
-.mvn/
-mvnw
-mvnw.cmd
+docs/
 
 # Test files
 src/test/
+*Test.java
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Docker files (don't include in build context)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+Jenkinsfile
+
+# Package managers lock files (optional)
+package-lock.json
+yarn.lock
 

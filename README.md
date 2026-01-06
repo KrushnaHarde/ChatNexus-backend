@@ -519,7 +519,84 @@ docker run -d \
 | Videos | MP4, MOV, AVI, MKV, WebM | 50MB |
 | Audio | MP3, WAV, OGG, M4A, AAC | 50MB |
 
+## 🚀 Quick Docker Test (Local)
+
+Test the Docker build locally in 2 minutes:
+
+```bash
+# Build Docker image
+docker build -t chatnexus:latest .
+
+# Run with environment variables
+docker run -d -p 8080:8080 \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e PROD_MONGO_URI=mongodb://mongo:password@turntable.proxy.rlwy.net:16373 \
+  -e PROD_JWT_SECRET=test-secret-key \
+  -e PROD_CLOUDINARY_CLOUD_NAME=your_cloud \
+  -e PROD_CLOUDINARY_API_KEY=your_key \
+  -e PROD_CLOUDINARY_API_SECRET=your_secret \
+  chatnexus:latest
+
+# Check if running
+curl http://localhost:8080/actuator/health
+# Should return: {"status":"UP"}
+```
+
+## 🚂 Deploy to Railway (5 Minutes)
+
+### Step 1: Prepare Code
+```bash
+git add .
+git commit -m "Add Docker configuration"
+git push origin main
+```
+
+### Step 2: Create Railway Project
+1. Go to **railway.app**
+2. Click **"Create New Project"**
+3. Select **"Deploy from GitHub repo"**
+4. Connect your GitHub account and select **ChatNexus** repository
+
+### Step 3: Add Environment Variables
+In Railway Dashboard → Your Project → Variables, add:
+
+```
+SPRING_PROFILES_ACTIVE=prod
+PROD_MONGO_URI=mongodb://mongo:PASSWORD@mongodb.railway.internal:27017
+PROD_MONGO_DATABASE=chat_nexus
+PROD_JWT_SECRET=your-strong-secret-key
+PROD_JWT_EXPIRATION=86400000
+PROD_CLOUDINARY_CLOUD_NAME=dompvechk
+PROD_CLOUDINARY_API_KEY=264146147837974
+PROD_CLOUDINARY_API_SECRET=q1UybgqO3rnyC8EEYo8MO4xPesw
+```
+
+**Note:** Replace `PASSWORD` in MongoDB URI with your actual password from Railway Dashboard
+
+### Step 4: Deploy
+Railway automatically detects the Dockerfile and deploys! Watch the logs:
+- Build: 3-5 minutes
+- Deployment: 1-2 minutes
+- Your app: `https://chatnexus.up.railway.app`
+
+### Step 5: Verify
+```bash
+# Check health endpoint
+curl https://chatnexus.up.railway.app/actuator/health
+# Should return: {"status":"UP"}
+
+# View Swagger UI
+https://chatnexus.up.railway.app/swagger-ui.html
+```
+
+### ⚠️ Important Notes
+- **MongoDB URL**: Use `mongodb.railway.internal` ONLY in production (Railway internal network)
+- **For local dev**: Use `turntable.proxy.rlwy.net` instead
+- **JWT Secret**: Generate a strong random string
+- **Health Check**: Railway checks `/actuator/health` every 30 seconds
+
 ## 📄 License
+
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 

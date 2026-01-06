@@ -1,0 +1,101 @@
+# 🚂 Railway Deployment - Quick Steps
+
+## Before You Start
+- ✅ Docker installed and tested locally (run: `test-docker.bat` or `test-docker.sh`)
+- ✅ Code committed to GitHub
+- ✅ MongoDB URI from Railway (or use your existing one)
+- ✅ Cloudinary API credentials
+
+---
+
+## 5-Minute Railway Deployment
+
+### 1. Prepare Your Code (1 min)
+```bash
+git add .
+git commit -m "Add Docker configuration"
+git push origin main
+```
+
+### 2. Create Railway Project (1 min)
+1. Go to **railway.app**
+2. Click **Create New Project** → **Deploy from GitHub repo**
+3. Connect GitHub and select **ChatNexus**
+4. Wait for connection
+
+### 3. Add Environment Variables (2 min)
+In Railway Dashboard → Your Project → Variables:
+
+| Variable | Value |
+|----------|-------|
+| `SPRING_PROFILES_ACTIVE` | `prod` |
+| `PROD_MONGO_URI` | `mongodb://mongo:PASSWORD@mongodb.railway.internal:27017` |
+| `PROD_MONGO_DATABASE` | `chat_nexus` |
+| `PROD_JWT_SECRET` | `your-strong-random-key` |
+| `PROD_JWT_EXPIRATION` | `86400000` |
+| `PROD_CLOUDINARY_CLOUD_NAME` | `` |
+| `PROD_CLOUDINARY_API_KEY` | `` |
+| `PROD_CLOUDINARY_API_SECRET` | `` |
+
+**Get MongoDB PASSWORD from Railway Dashboard:**
+- MongoDB service → Variables → Copy the password value
+
+### 4. Deploy (1 min)
+Railway automatically detects Dockerfile and starts building:
+- Build time: 3-5 minutes
+- Deployment time: 1-2 minutes
+- Your app URL: Shown in Railway Dashboard
+
+### 5. Verify Deployment (Optional)
+```bash
+# Replace with your Railway URL
+curl https://chatnexus.up.railway.app/actuator/health
+
+# Should return: {"status":"UP"}
+```
+
+---
+
+## ⚠️ Critical Notes
+
+**MongoDB URL Formats:**
+- ✅ **Production (Railway)**: `mongodb://mongo:PASSWORD@mongodb.railway.internal:27017`
+- ❌ **NOT for Production**: `turntable.proxy.rlwy.net` (this is for local dev only!)
+
+**JWT Secret:**
+Generate a strong random string:
+```bash
+# macOS/Linux
+openssl rand -hex 32
+
+# Windows (PowerShell)
+[Convert]::ToBase64String((1..32 | ForEach-Object {[byte](Get-Random -Max 256)})) | -replace '\W'
+```
+
+**Health Check:**
+Railway checks `/actuator/health` every 30 seconds. If it fails, the app will restart.
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Build fails | Check Dockerfile exists, verify Java 17 in pom.xml |
+| App won't start | Check environment variables are all set, verify MongoDB URI |
+| Can't connect to MongoDB | Get correct PASSWORD from Railway MongoDB service variables |
+| Health check failing | Wait 40 seconds for startup, check app logs in Railway |
+
+---
+
+## Next Steps After Deployment
+
+1. ✅ Verify app is running: `https://chatnexus.up.railway.app/swagger-ui.html`
+2. ✅ Test real-time chat functionality
+3. ✅ Monitor logs in Railway Dashboard
+4. ✅ Set up custom domain (optional)
+
+---
+
+**Your ChatNexus app is now live!** 🎉
+

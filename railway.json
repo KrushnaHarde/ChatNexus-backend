@@ -1,0 +1,47 @@
+{
+}
+  }
+    }
+      "value": ""
+      "description": "Cloudinary API secret",
+    "PROD_CLOUDINARY_API_SECRET": {
+    },
+      "value": ""
+      "description": "Cloudinary API key",
+    "PROD_CLOUDINARY_API_KEY": {
+    },
+      "value": ""
+      "description": "Cloudinary cloud name",
+    "PROD_CLOUDINARY_CLOUD_NAME": {
+    },
+      "value": "86400000"
+      "description": "JWT token expiration in milliseconds",
+    "PROD_JWT_EXPIRATION": {
+    },
+      "value": ""
+      "description": "JWT signing secret (generate a strong random string)",
+    "PROD_JWT_SECRET": {
+    },
+      "value": "chat_nexus"
+      "description": "MongoDB database name",
+    "PROD_MONGO_DATABASE": {
+    },
+      "value": ""
+      "description": "MongoDB connection URI for production (use mongodb.railway.internal for Railway)",
+    "PROD_MONGO_URI": {
+    },
+      "value": "prod"
+      "description": "Spring active profile (dev or prod)",
+    "SPRING_PROFILES_ACTIVE": {
+  "env": {
+  "repository": "https://github.com/YOUR_USERNAME/ChatNexus",
+  ],
+    "chat"
+    "mongodb",
+    "websocket",
+    "spring-boot",
+    "java",
+  "keywords": [
+  "description": "Real-time 1-to-1 chat application using Spring Boot WebSocket",
+  "name": "ChatNexus",
+

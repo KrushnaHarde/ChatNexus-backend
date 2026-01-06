@@ -38,12 +38,11 @@ public class ChatMessageService {
         var chatId = chatRoomService.getChatRoomId(
                 chatMessage.getSenderId(),
                 chatMessage.getRecipientId(),
-                true
-        ).orElseThrow(() -> {
-            log.error("Failed to get/create chat room for {} and {}",
-                    chatMessage.getSenderId(), chatMessage.getRecipientId());
-            return new RuntimeException("Failed to create chat room");
-        });
+                true).orElseThrow(() -> {
+                    log.error("Failed to get/create chat room for {} and {}",
+                            chatMessage.getSenderId(), chatMessage.getRecipientId());
+                    return new RuntimeException("Failed to create chat room");
+                });
 
         chatMessage.setChatId(chatId);
         chatMessage.setTimeStamp(new Date());
@@ -64,7 +63,7 @@ public class ChatMessageService {
     /**
      * Find all messages between two users.
      *
-     * @param senderId the sender's ID
+     * @param senderId    the sender's ID
      * @param recipientId the recipient's ID
      * @return list of messages
      */
@@ -120,7 +119,7 @@ public class ChatMessageService {
     /**
      * Mark all messages from sender to recipient as read.
      *
-     * @param senderId the sender's ID
+     * @param senderId    the sender's ID
      * @param recipientId the recipient's ID
      */
     public void markMessagesAsRead(String senderId, String recipientId) {
@@ -144,7 +143,7 @@ public class ChatMessageService {
      * Count unread messages for a recipient from a specific sender.
      *
      * @param recipientId the recipient's ID
-     * @param senderId the sender's ID
+     * @param senderId    the sender's ID
      * @return count of unread messages
      */
     public long countUnreadMessages(String recipientId, String senderId) {
@@ -154,7 +153,7 @@ public class ChatMessageService {
     /**
      * Mark messages as read and return the updated messages.
      *
-     * @param senderId the sender's ID
+     * @param senderId    the sender's ID
      * @param recipientId the recipient's ID
      * @return list of messages that were marked as read
      */
@@ -212,6 +211,8 @@ public class ChatMessageService {
                         .fullName(partner.getFullName())
                         .status(partner.getStatus())
                         .lastMessage(lastMessage.map(ChatMessage::getContent).orElse(null))
+                        .lastMessageType(lastMessage
+                                .map(m -> m.getMessageType() != null ? m.getMessageType().name() : "TEXT").orElse(null))
                         .lastMessageTime(lastMessage.map(ChatMessage::getTimeStamp).orElse(null))
                         .lastMessageSenderId(lastMessage.map(ChatMessage::getSenderId).orElse(null))
                         .unreadCount(unreadCount)
@@ -222,9 +223,12 @@ public class ChatMessageService {
         }
 
         contacts.sort((c1, c2) -> {
-            if (c1.getLastMessageTime() == null && c2.getLastMessageTime() == null) return 0;
-            if (c1.getLastMessageTime() == null) return 1;
-            if (c2.getLastMessageTime() == null) return -1;
+            if (c1.getLastMessageTime() == null && c2.getLastMessageTime() == null)
+                return 0;
+            if (c1.getLastMessageTime() == null)
+                return 1;
+            if (c2.getLastMessageTime() == null)
+                return -1;
             return c2.getLastMessageTime().compareTo(c1.getLastMessageTime());
         });
 

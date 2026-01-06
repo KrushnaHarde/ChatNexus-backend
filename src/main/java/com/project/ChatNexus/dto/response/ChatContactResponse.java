@@ -19,6 +19,7 @@ public class ChatContactResponse {
     private String fullName;
     private Status status;
     private String lastMessage;
+    private String lastMessageType;
     private Date lastMessageTime;
     private long unreadCount;
     private String lastMessageSenderId;

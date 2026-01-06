@@ -1,0 +1,49 @@
+2026-01-06T13:03:18.524+05:30  INFO 23396 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : Starting ChatNexusApplication using Java 21.0.9 with PID 23396 (D:\spring\ChatNexus\target\classes started by Admin in D:\spring\ChatNexus)
+2026-01-06T13:03:18.528+05:30  INFO 23396 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : The following 1 profile is active: "prod"
+2026-01-06T13:03:21.826+05:30  WARN 23396 --- [ChatNexus] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-01-06T13:03:22.819+05:30  INFO 23396 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : Started ChatNexusApplication in 4.845 seconds (process running for 5.478)
+2026-01-06T13:03:23.143+05:30  INFO 23396 --- [ChatNexus] [clientInboundChannel-13] c.p.ChatNexus.controller.UserController  : User connecting: admin (admin)
+2026-01-06T13:03:23.352+05:30  INFO 23396 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.ChatController  : Fetching undelivered messages for user: admin
+2026-01-06T13:03:23.352+05:30  INFO 23396 --- [ChatNexus] [http-nio-8080-exec-6] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:03:23.361+05:30  INFO 23396 --- [ChatNexus] [http-nio-8080-exec-7] c.p.C.service.ChatMessageService         : Marked 0 messages as DELIVERED
+2026-01-06T13:03:23.365+05:30  INFO 23396 --- [ChatNexus] [clientInboundChannel-13] c.project.ChatNexus.service.UserService  : User admin is now ONLINE
+2026-01-06T13:03:23.457+05:30  INFO 23396 --- [ChatNexus] [http-nio-8080-exec-8] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:04:12.694+05:30  INFO 24200 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : Starting ChatNexusApplication using Java 21.0.9 with PID 24200 (D:\spring\ChatNexus\target\classes started by Admin in D:\spring\ChatNexus)
+2026-01-06T13:04:12.697+05:30  INFO 24200 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : The following 1 profile is active: "prod"
+2026-01-06T13:04:15.604+05:30  WARN 24200 --- [ChatNexus] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-01-06T13:04:16.583+05:30  INFO 24200 --- [ChatNexus] [restartedMain] c.p.ChatNexus.ChatNexusApplication       : Started ChatNexusApplication in 4.412 seconds (process running for 5.022)
+2026-01-06T13:04:16.883+05:30  INFO 24200 --- [ChatNexus] [clientInboundChannel-13] c.p.ChatNexus.controller.UserController  : User connecting: admin (admin)
+2026-01-06T13:04:17.028+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-6] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:04:17.028+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.ChatController  : Fetching undelivered messages for user: admin
+2026-01-06T13:04:17.035+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.p.C.service.ChatMessageService         : Marked 0 messages as DELIVERED
+2026-01-06T13:04:17.063+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-8] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:04:54.619+05:30  INFO 24200 --- [ChatNexus] [clientInboundChannel-28] c.p.ChatNexus.controller.UserController  : User connecting: abcd (abcd)
+2026-01-06T13:04:54.630+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: abcd
+2026-01-06T13:04:54.629+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-5] c.p.ChatNexus.controller.ChatController  : Fetching undelivered messages for user: abcd
+2026-01-06T13:04:54.632+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-5] c.p.C.service.ChatMessageService         : Marked 0 messages as DELIVERED
+2026-01-06T13:04:54.637+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-8] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:04:54.641+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-9] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: abcd
+2026-01-06T13:04:57.682+05:30  INFO 24200 --- [ChatNexus] [clientInboundChannel-15] c.p.ChatNexus.controller.UserController  : User connecting: abcd (abcd)
+2026-01-06T13:04:57.689+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.ChatController  : Fetching undelivered messages for user: abcd
+2026-01-06T13:04:57.689+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-6] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: abcd
+2026-01-06T13:04:57.691+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.p.C.service.ChatMessageService         : Marked 0 messages as DELIVERED
+2026-01-06T13:04:57.697+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-5] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:04:57.700+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-8] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: abcd
+2026-01-06T13:04:59.368+05:30  INFO 24200 --- [ChatNexus] [clientInboundChannel-18] c.p.ChatNexus.controller.UserController  : User disconnecting: abcd
+2026-01-06T13:04:59.370+05:30  INFO 24200 --- [ChatNexus] [clientInboundChannel-23] c.p.ChatNexus.controller.UserController  : User disconnecting: abcd
+2026-01-06T13:04:59.379+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-1] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:04:59.389+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-4] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:05:14.702+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.AuthController  : Registration attempt for username: one
+2026-01-06T13:05:14.703+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.project.ChatNexus.service.AuthService  : Processing registration for username: one
+2026-01-06T13:05:14.860+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.project.ChatNexus.service.UserService  : User saved: one
+2026-01-06T13:05:14.887+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.project.ChatNexus.service.AuthService  : Registration successful for user: one
+2026-01-06T13:05:14.888+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-7] c.p.ChatNexus.controller.AuthController  : User registered successfully: one
+2026-01-06T13:05:14.918+05:30  INFO 24200 --- [ChatNexus] [clientInboundChannel-5] c.p.ChatNexus.controller.UserController  : User connecting: one (one)
+2026-01-06T13:05:14.939+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-1] c.p.ChatNexus.controller.ChatController  : Fetching undelivered messages for user: one
+2026-01-06T13:05:14.939+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-4] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: one
+2026-01-06T13:05:14.941+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-1] c.p.C.service.ChatMessageService         : Marked 0 messages as DELIVERED
+2026-01-06T13:05:14.943+05:30  INFO 24200 --- [ChatNexus] [clientInboundChannel-5] c.project.ChatNexus.service.UserService  : User one is now ONLINE
+2026-01-06T13:05:14.954+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-6] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: admin
+2026-01-06T13:05:14.954+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-3] c.p.ChatNexus.controller.ChatController  : Fetching chat contacts for user: one
+2026-01-06T13:05:21.772+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-10] c.p.ChatNexus.controller.UserController  : Searching users with query: test
+2026-01-06T13:05:24.409+05:30  INFO 24200 --- [ChatNexus] [http-nio-8080-exec-4] c.p.ChatNexus.controller.UserController  : Searching users with query: adm

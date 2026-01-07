@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: ChatNexus
+  mongodb:
+    uri: ${MONGO_URI}
+    database: ${MONGO_DATABASE}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+
+server:
+  port: ${SERVER_PORT:8080}
+

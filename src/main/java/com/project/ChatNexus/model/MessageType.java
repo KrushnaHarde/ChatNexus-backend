@@ -4,6 +4,6 @@ public enum MessageType {
     TEXT,
     IMAGE,
     VIDEO,
-    AUDIO
+    AUDIO,
+    SYSTEM // System messages like "User was added to group"
 }
-

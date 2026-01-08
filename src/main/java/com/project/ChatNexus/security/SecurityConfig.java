@@ -27,7 +27,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;    
     private final PasswordEncoder passwordEncoder;
 
     @Bean
